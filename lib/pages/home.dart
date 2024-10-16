@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class CallScreen extends StatelessWidget {
@@ -24,8 +25,29 @@ class CallScreen extends StatelessWidget {
   }
 }
 
-class CallPage extends StatelessWidget {
+class CallPage extends StatefulWidget {
   const CallPage({super.key});
+
+  static const platform = MethodChannel('com.example.videocalling_test/pip');
+
+  @override
+  _CallPageState createState() => _CallPageState();
+}
+
+class _CallPageState extends State<CallPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Notify the native side that the user is on the call screen
+    CallPage.platform.invokeMethod('onCallScreen');
+  }
+
+  @override
+  void dispose() {
+    // Notify the native side that the user has left the call screen
+    CallPage.platform.invokeMethod('offCallScreen');
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
